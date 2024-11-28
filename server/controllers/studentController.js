@@ -33,37 +33,57 @@ export const getStudent = async (req, res) => {
   res.status(StatusCodes.OK).json({ student });
 };
 
-export const createStudentProfiles = async (req, res) => {
-  const studentsData = req.body; // Array of students
+// export const createStudentProfiles = async (req, res) => {
+//   const studentsData = req.body; // Array of students
 
-  // Insert multiple students
-  const students = await Student.insertMany(studentsData);
+//   // Insert multiple students
+//   const students = await Student.insertMany(studentsData);
 
-  // Iterate through each student to generate QR codes
-  const updatedStudents = await Promise.all(
-    students.map(async (student) => {
-      const qrCodeInfo = {
-        id: student._id,
-        studentName: student.studentName,
-        teacherName: student.teacherName,
-        studentClassTime: student.studentClassTime,
-      };
+//   // Iterate through each student to generate QR codes
+//   const updatedStudents = await Promise.all(
+//     students.map(async (student) => {
+//       const qrCodeInfo = {
+//         id: student._id,
+//         studentName: student.studentName,
+//         teacherName: student.teacherName,
+//         studentClassTime: student.studentClassTime,
+//       };
 
-      const response = await qrCodeGenerator(qrCodeInfo, student.studentName);
+//       const response = await qrCodeGenerator(qrCodeInfo, student.studentName);
 
-      // Update the student with the QR code information
-      return await Student.findByIdAndUpdate(
-        student._id,
-        {
-          qrCode: response.secure_url,
-          qrCodePublicId: response.public_id,
-        },
-        { new: true }
-      );
-    })
-  );
+//       // Update the student with the QR code information
+//       return await Student.findByIdAndUpdate(
+//         student._id,
+//         {
+//           qrCode: response.secure_url,
+//           qrCodePublicId: response.public_id,
+//         },
+//         { new: true }
+//       );
+//     })
+//   );
 
-  res.status(StatusCodes.CREATED).json({ students: updatedStudents });
+//   res.status(StatusCodes.CREATED).json({ students: updatedStudents });
+// };
+
+export const createStudentProfile = async (req, res) => {
+  const { studentName, teacherName, studentClassTime } = req.body;
+
+  const student = await Student.create(req.body);
+
+  const qrCodeInfo = {
+    id: student._id,
+    studentName,
+    teacherName,
+    studentClassTime,
+  };
+
+  const response = await qrCodeGenerator(qrCodeInfo,studentName);
+  student.qrCode = response.secure_url;
+  student.qrCodePublicId = response.public_id;
+  await student.save();
+
+  res.status(StatusCodes.CREATED).json({ student });
 };
 
 
