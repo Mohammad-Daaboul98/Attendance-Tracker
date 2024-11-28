@@ -35,22 +35,34 @@ export const getStudent = async (req, res) => {
 
 export const createStudentProfile = async (req, res) => {
   const { studentName, teacherName, studentClassTime } = req.body;
-  const qrCodeInfo = studentName + "-" + teacherName + "-" + studentClassTime;
-
-  await qrCodeGenerator(qrCodeInfo, req.body);
 
   const student = await Student.create(req.body);
+
+  const qrCodeInfo = {
+    id: student._id,
+    studentName,
+    teacherName,
+    studentClassTime,
+  };
+
+  const response = await qrCodeGenerator(qrCodeInfo,studentName);
+  student.qrCode = response.secure_url;
+  student.qrCodePublicId = response.public_id;
+  await student.save();
 
   res.status(StatusCodes.CREATED).json({ student });
 };
 
 export const updateMultipleStudentsAttendance = async (req, res) => {
   const { date, attendance } = req.body;
+  console.log(attendance);
+  
 
   try {
     await Promise.all(
       attendance.map(async ({ studentId, status }) => {
         const student = await Student.findById(studentId);
+        
 
         const existingAttendance = student.studentAttendance.find(
           (attendance) => attendance.date.toISOString().split("T")[0] === date

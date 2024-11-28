@@ -3,9 +3,10 @@ import QRCode from "qrcode";
 import { createCanvas, loadImage } from "canvas";
 import { formatImage } from "../middleware/multerMiddleware.js";
 
-const qrCodeGenerator = async (id, data) => {
-  const { studentName } = data; // Extract studentName from data
-  const qrCode = await QRCode.toDataURL(id.toString());
+const qrCodeGenerator = async (info, studentName) => {
+  const serializedInfo = JSON.stringify(info);
+
+  const qrCode = await QRCode.toDataURL(serializedInfo.toString());
 
   if (qrCode) {
     // Define canvas size
@@ -39,9 +40,7 @@ const qrCodeGenerator = async (id, data) => {
       `data:image/png;base64,${file.content.toString("base64")}`
     );
 
-    // Add the QR code URL and public ID to the data object
-    data.qrCode = response.secure_url;
-    data.qrCodePublicId = response.public_id;
+    return response;
   }
 };
 

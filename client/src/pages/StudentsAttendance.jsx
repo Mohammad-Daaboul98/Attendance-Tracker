@@ -1,5 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-import { RadioGroup, SearchComponent, TableComponent } from "../components";
+import {
+  QrReader,
+  RadioGroup,
+  SearchComponent,
+  TableComponent,
+} from "../components";
 import { Form, redirect, useLoaderData, useNavigation } from "react-router-dom";
 import customFetch from "../utils/customFetch";
 import { useState } from "react";
@@ -25,19 +30,33 @@ export const action =
   async ({ request }) => {
     const formData = await request.formData();
     const data = Object.fromEntries(formData);
-    let studentAttendance = Object.entries(data).map(
-      ([studentId, attendance]) => {
-        return {
-          studentId,
-          status: attendance,
-        };
-      }
-    );
-    studentAttendance.pop();
-    studentAttendance = {
-      date: data.date,
-      attendance: studentAttendance,
-    };
+    let studentAttendance;
+
+    if (data.status) {
+      studentAttendance = {
+        date: data.date,
+        attendance: [
+          {
+            studentId: data.studentId,
+            status: data.status,
+          },
+        ],
+      };
+    } else {
+      studentAttendance = Object.entries(data).map(
+        ([studentId, attendance]) => {
+          return {
+            studentId,
+            status: attendance,
+          };
+        }
+      );
+      studentAttendance.pop();
+      studentAttendance = {
+        date: data.date,
+        attendance: studentAttendance,
+      };
+    }
 
     try {
       await customFetch.patch("student", studentAttendance);
@@ -69,6 +88,8 @@ export const loader =
 
 const StudentsAttendance = () => {
   const [studentsAttendance, setStudentsAttendance] = useState({});
+  const [showQrReader, setShowQrReader] = useState(false);
+  const [qrAttendData, setQrAttendData] = useState(null);
 
   const { searchValue } = useLoaderData();
   const {
@@ -148,12 +169,23 @@ const StudentsAttendance = () => {
     },
   ];
 
+  // Handle QR code scan result
+  const handleQrScan = (data) => {
+    if (data) {
+      // Assuming the QR code data is structured as { id, status }
+      setQrAttendData(data);
+      setShowQrReader(false); // Close the QR Reader
+      handleAttendanceChange(data.id, data.status); // Update the attendance
+    }
+  };
+
   return (
     <>
       <SearchComponent
         searchValue={searchValue}
         labelText="بحث عن طريق اسم الطالب"
       />
+
       <Box
         mx={"auto"}
         mt={4}
@@ -161,6 +193,13 @@ const StudentsAttendance = () => {
         width={{ base: "90%", md: "80%", lg: "xl", xl: "2xl" }}
       >
         <Form method="post">
+          {showQrReader && (
+            <QrReader
+              onClose={() => setShowQrReader(false)}
+              onScan={handleQrScan}
+            />
+          )}
+
           {Object.entries(studentsAttendance).map(([studentId, attendance]) => (
             <Input
               key={studentId}
@@ -187,6 +226,7 @@ const StudentsAttendance = () => {
               colorScheme="green"
               size="lg"
               w={{ base: "48%", lg: "auto", md: "auto", sm: "48%" }}
+              onClick={() => setShowQrReader(true)} // Show QR Reader on click
             >
               تصوير الباركود
             </Button>
