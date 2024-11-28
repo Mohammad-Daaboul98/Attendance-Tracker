@@ -1,0 +1,17 @@
+import { PiStudentDuotone } from "react-icons/pi";
+import { GiTeacher } from "react-icons/gi";
+
+const Links = [
+
+  {
+    text: "الطلاب",
+    icon: <PiStudentDuotone />,
+    submenu: [
+      { subText: "عرض الطلاب", subPath: "students" },
+      { subText: "جدول الحضور", subPath: "students-attendance" },
+      { subText: "انشاء طالب", subPath: "add-student" },
+    ],
+  },
+];
+
+export default Links;
