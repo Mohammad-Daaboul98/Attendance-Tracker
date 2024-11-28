@@ -16,6 +16,6 @@ router.post("/login", apiLimiter, validateLoginInput, login);
 router.get("/logout", logout);
 
 //one time use
-router.post("/registerAdmins", registerAdmin);
+router.post("/registerAdmin", registerAdmin);
 
 export default router;
