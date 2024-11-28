@@ -11,10 +11,7 @@ import {
 import { queryClient } from "../utils/queryClient";
 import { action as loginAction } from "../pages/Login";
 
-import {
-  action as addStudentAction,
-  loader as addStudentLoader,
-} from "../pages/AddStudent";
+import { action as addStudentAction } from "../pages/AddStudent";
 import {
   action as editStudentAction,
   loader as editStudentLoader,
@@ -26,7 +23,6 @@ import {
 import { action as deleteStudentAction } from "../pages/DeletesStudent";
 import { loader as studentLoader } from "../pages/AllStudents";
 import { loader as dashboardLoader } from "../pages/DashboardLayout";
-
 
 export const Router = [
   {
@@ -45,7 +41,6 @@ export const Router = [
         element: <DashboardLayout queryClient={queryClient} />,
         loader: dashboardLoader(queryClient),
         children: [
-
           {
             path: "students",
             element: <AllStudents />,
@@ -61,7 +56,6 @@ export const Router = [
             path: "add-student",
             element: <AddStudent />,
             action: addStudentAction(queryClient),
-            loader: addStudentLoader(queryClient),
           },
           {
             path: "edit-student/:id",
@@ -73,7 +67,6 @@ export const Router = [
             path: "delete-student/:id",
             action: deleteStudentAction(queryClient),
           },
-
         ],
       },
     ],

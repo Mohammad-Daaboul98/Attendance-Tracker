@@ -54,7 +54,7 @@ const Navbar = ({
             transition="all .5s ease-out"
             p="20px 0 50px"
           >
-            Attendance Tracker
+            حضوري
           </Heading>
         </Flex>
         <NavLinks setToggled={setToggled} />

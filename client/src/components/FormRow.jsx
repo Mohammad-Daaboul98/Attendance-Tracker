@@ -19,17 +19,13 @@ function FormRow({
   defaultKey,
   onChange,
   isRequired,
-
 }) {
   const [show, setShow] = useState(false);
   const [password, setPassword] = useState("");
-  
 
   const inputBg = useColorModeValue("#fff", "#2D3748");
   const borderColor = useColorModeValue("#cbd5e0", "#4A5568");
   const placeholderColor = useColorModeValue("black", "#E2E8F0");
-
-
 
   return (
     <FormControl
@@ -37,7 +33,7 @@ function FormRow({
       alignItems="center"
       flexWrap="wrap"
       mb={5}
-      isRequired={isRequired ? false : true}
+      isRequired={!isRequired ? false : true}
     >
       <FormLabel htmlFor={id} mb={2} fontWeight="bold">
         {labelText}
@@ -65,11 +61,7 @@ function FormRow({
             justifyContent="flex-start"
             width={"auto"}
           >
-            <Button
-              h="100%"
-              size="md"
-              onClick={() => setShow(!show)}
-            >
+            <Button h="100%" size="md" onClick={() => setShow(!show)}>
               {show ? <ViewOffIcon /> : <ViewIcon />}
             </Button>
           </InputRightElement>

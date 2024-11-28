@@ -31,7 +31,7 @@ const SearchComponent = ({ labelText, searchValue }) => {
           name="search"
           onChange={handleSearch}
           labelText={labelText}
-          isRequired="no"
+          isRequired={false}
           defaultValue={search}
         />
       </Form>

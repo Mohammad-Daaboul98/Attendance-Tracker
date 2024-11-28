@@ -1,13 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { useLoaderData } from "react-router-dom";
-import {
-  SearchComponent,
-  TableComponent,
-} from "../components";
+import { SearchComponent, TableComponent } from "../components";
 import customFetch from "../utils/customFetch";
-import dayjs from "dayjs";
-import "dayjs/locale/ar";
-dayjs.locale("ar");
+import ExportExcel from "../components/ExportCSV";
 
 const allStudentsQuery = (params) => {
   const { search } = params;
@@ -46,11 +41,6 @@ const AllStudents = () => {
     data: { student },
   } = useQuery(allStudentsQuery(searchValue));
 
-  console.log(student);
-  
-
-
-
   const columns = [
     { id: "studentName", header: "الطالب", accessorKey: "studentName" },
     {
@@ -80,6 +70,7 @@ const AllStudents = () => {
           editAndDelete={true}
           editPage="edit-student"
           deletePage="delete-student"
+          downloadBtn={true}
         />
       </>
     </>

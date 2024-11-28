@@ -13,6 +13,7 @@ import {
   Button,
   useBreakpointValue,
   IconButton,
+  Flex,
 } from "@chakra-ui/react";
 import {
   useReactTable,
@@ -28,6 +29,7 @@ import {
   ChevronUpIcon,
 } from "@chakra-ui/icons";
 import { Form, Link } from "react-router-dom";
+import ExportExcel from "./ExportCSV";
 
 const TableComponent = ({
   title,
@@ -36,7 +38,7 @@ const TableComponent = ({
   editAndDelete,
   editPage,
   deletePage,
-  width
+  downloadBtn,
 }) => {
   const buttonSize = useBreakpointValue({ base: "sm", md: "md" });
 
@@ -66,7 +68,7 @@ const TableComponent = ({
       p="4"
       h="100%"
       overflow="hidden"
-      width={'100%'}
+      width={"100%"}
     >
       <TableContainer
         width={{ base: "100%", md: "80%" }}
@@ -86,7 +88,14 @@ const TableComponent = ({
             mb="10px"
             borderBottom="1px solid #000"
           >
-            {title}
+            {downloadBtn ? (
+              <Flex alignItems="center" justifyContent="center">
+                <Box mx="auto"> {title}</Box>
+                <ExportExcel data={data} />
+              </Flex>
+            ) : (
+              title
+            )}
           </TableCaption>
           <Thead bg="blue.600" color="white">
             {table.getHeaderGroups().map((headerGroup) => (

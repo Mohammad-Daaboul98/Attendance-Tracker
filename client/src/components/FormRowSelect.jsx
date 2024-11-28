@@ -36,9 +36,8 @@ const FormRowSelect = ({
     onChange && onChange(selected ? selected : null);
   };
 
-
   return (
-    <FormControl>
+    <FormControl isRequired={true}>
       <FormLabel htmlFor={name} mb={2} fontWeight="bold">
         {labelText || name}
       </FormLabel>
@@ -59,6 +58,7 @@ const FormRowSelect = ({
               : defaultValue && { label: defaultValue, value: defaultValue }
           }
           menuPortalTarget={document.body}
+          required={true}
         />
       </Box>
     </FormControl>
