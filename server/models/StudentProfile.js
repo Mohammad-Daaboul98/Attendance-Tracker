@@ -4,6 +4,7 @@ import { Attendance } from "./Attendance.js";
 const StudentProfile = new mongoose.Schema({
   studentName: String,
   teacherName: String,
+  studentPhone: String,
   studentAttendance: [Attendance],
   studentClassTime: String,
   qrCode: String,

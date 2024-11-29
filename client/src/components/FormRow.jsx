@@ -9,6 +9,9 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css"; // Import PhoneInput's default styles
+
 
 function FormRow({
   name,
@@ -19,9 +22,13 @@ function FormRow({
   defaultKey,
   onChange,
   isRequired,
+  phone,
+
 }) {
   const [show, setShow] = useState(false);
   const [password, setPassword] = useState("");
+  const [phoneValue, setPhoneValue] = useState(phone? defaultValue[defaultKey]:'');
+
 
   const inputBg = useColorModeValue("#fff", "#2D3748");
   const borderColor = useColorModeValue("#cbd5e0", "#4A5568");
@@ -39,7 +46,55 @@ function FormRow({
         {labelText}
       </FormLabel>
 
-      {type === "password" ? (
+      {phone ? (
+        <PhoneInput
+          containerClass="custom-phone-input"
+          country={"sy"}
+          value={phoneValue}
+          onChange={setPhoneValue}
+          inputProps={{
+            name: name,
+            required: isRequired,
+            id: id,
+          }}
+          containerStyle={{
+            width: "100%",
+            direction: "ltr",
+          }}
+          inputStyle={{
+            width: "100%",
+            height: "var(--chakra-sizes-10)",
+            borderRadius: "var(--chakra-radii-md)",
+            backgroundColor: inputBg,
+            borderColor: borderColor,
+            paddingRight: "4rem",
+            fontSize: "var(--chakra-fontSizes-md)",
+            color: "inherit",
+            "::placeholder": {
+              color: placeholderColor,
+            },
+          }}
+          buttonStyle={{
+            borderRadius: "0 var(--chakra-radii-md) var(--chakra-radii-md) 0",
+            backgroundColor: inputBg,
+            border: `1px solid ${borderColor}`,
+            height: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+          dropdownStyle={{
+            backgroundColor: inputBg,
+            color: "inherit",
+            borderRadius: "var(--chakra-radii-md)",
+            border: `1px solid ${borderColor}`,
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            translate: "(-50%,-50%)",
+          }}
+        />
+      ) : type === "password" ? (
         <InputGroup size="lg">
           <Input
             id={id}

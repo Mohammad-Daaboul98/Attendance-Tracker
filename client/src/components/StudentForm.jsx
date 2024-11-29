@@ -50,6 +50,7 @@ const StudentForm = ({
               listItem,
               defaultKey,
               btnPassword,
+              phone,
             }) => {
               if (type !== "select") {
                 return (
@@ -62,6 +63,7 @@ const StudentForm = ({
                     defaultValue={defaultValue}
                     defaultKey={defaultKey}
                     btnPassword={btnPassword}
+                    phone={phone}
                     isRequired={true}
                   />
                 );

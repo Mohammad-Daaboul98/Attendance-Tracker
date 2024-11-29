@@ -53,6 +53,14 @@ const AllStudents = () => {
       header: "وقت حضور الطالب",
       accessorKey: "studentClassTime",
     },
+    {
+      id: "studentPhone",
+      header: "رقم الهاتف",
+      accessorKey: "studentPhone",
+      cell: ({ cell }) => (
+        <div style={{ direction: "ltr" }}>{cell.getValue()}</div>
+      ),
+    },
   ];
 
   return (

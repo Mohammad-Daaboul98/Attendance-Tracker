@@ -13,7 +13,13 @@ export const studentInput = [
     labelText: "اسم الاستاذ",
     defaultKey: "teacherName",
   },
-
+  {
+    type: "tel",
+    id: "studentPhone",
+    labelText: "رقم الهاتف",
+    defaultKey: "studentPhone",
+    phone: true,
+  },
   {
     type: "select",
     id: "studentClassTime",
