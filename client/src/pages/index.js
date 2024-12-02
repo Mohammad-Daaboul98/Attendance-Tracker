@@ -6,3 +6,6 @@ export { default as AllStudents } from "./AllStudents";
 export { default as StudentsAttendance } from "./StudentsAttendance";
 export { default as AddStudent } from "./AddStudent";
 export { default as EditStudent } from "./EditStudent";
+export { default as AllTeachers } from "./AllTeachers";
+export { default as AddTeacher } from "./AddTeacher";
+export { default as EditTeacher } from "./EditTeacher";

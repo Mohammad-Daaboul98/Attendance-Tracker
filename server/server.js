@@ -21,6 +21,7 @@ import { fileURLToPath } from "url";
 import authRouter from "./routes/authRouter.js";
 import usersRouter from "./routes/userRouter.js";
 import studentRouter from "./routes/studentRouter.js";
+import teacherRouter from "./routes/teacherRouter.js";
 
 //Middleware
 import errorHandlerMiddleware from "./middleware/errorHandlerMiddleware.js";
@@ -50,6 +51,7 @@ app.use(mongoSanitize());
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/users", authenticateUser, usersRouter);
 app.use("/api/v1/student", authenticateUser, studentRouter);
+app.use("/api/v1/teacher", authenticateUser, teacherRouter);
 
 
 app.get("*", (req, res) => {

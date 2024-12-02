@@ -3,7 +3,6 @@ import { Form } from "react-router-dom";
 import { studentInput } from "../utils/formFields";
 import FormRow from "./FormRow";
 import FormRowSelect from "./FormRowSelect";
-import { useState } from "react";
 import { BeatLoader } from "react-spinners";
 
 const StudentForm = ({
@@ -12,6 +11,7 @@ const StudentForm = ({
   errorMessage,
   defaultValue,
   isLoading,
+  teachers,
 }) => {
   return (
     <Box
@@ -51,6 +51,8 @@ const StudentForm = ({
               defaultKey,
               btnPassword,
               phone,
+              secondaryListItem,
+              require,
             }) => {
               if (type !== "select") {
                 return (
@@ -64,7 +66,7 @@ const StudentForm = ({
                     defaultKey={defaultKey}
                     btnPassword={btnPassword}
                     phone={phone}
-                    isRequired={true}
+                    isRequired={require ? true : false}
                   />
                 );
               } else {
@@ -73,10 +75,11 @@ const StudentForm = ({
                     key={id}
                     name={id}
                     labelText={labelText}
-                    list={list}
+                    list={list ? list : teachers}
                     listItem={listItem}
                     PlacementTop={true}
                     defaultValue={defaultValue[defaultKey]}
+                    secondaryListItem={secondaryListItem}
                   />
                 );
               }

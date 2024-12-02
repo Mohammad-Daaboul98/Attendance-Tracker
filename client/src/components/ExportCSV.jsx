@@ -8,7 +8,9 @@ const ExportExcel = ({ data }) => {
 
   const handleExport = () => {
     // Extract the qrCode data
-    const qrCodeData = data.map((item) => ({ qrCode: item.qrCode }));
+    const qrCodeData = data.map((item) => ({ data: item.studentAttendance }));
+    console.log(qrCodeData);
+    
 
     // Convert data to worksheet
     const ws = XLSX.utils.json_to_sheet(qrCodeData);

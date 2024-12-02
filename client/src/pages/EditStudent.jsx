@@ -10,13 +10,19 @@ import { toast } from "react-toastify";
 import { useQuery } from "@tanstack/react-query";
 import { Box } from "@chakra-ui/react";
 
-const studentsQuery = (id) => {
+const studentsTeachersQuery = (id) => {
   return {
-    queryKey: ["student", id],
+    queryKey: ["students", "teachers", id],
     queryFn: async () => {
-      const { data } = await customFetch.get(`/student/${id}`);
+      const [students, teachers] = await Promise.all([
+        customFetch.get(`/student/${id}`),
+        customFetch.get("/teacher"),
+      ]);
 
-      return data;
+      return {
+        students: students.data.student,
+        teachers: teachers.data.teachers,
+      };
     },
   };
 };
@@ -25,7 +31,7 @@ export const loader =
   (queryClient) =>
   async ({ params }) => {
     try {
-      await queryClient.ensureQueryData(studentsQuery(params.id));
+      await queryClient.ensureQueryData(studentsTeachersQuery(params.id));
       return params.id;
     } catch (error) {
       const errorMessage = error?.response?.data?.msg;
@@ -58,9 +64,9 @@ const EditStudent = () => {
   const id = useLoaderData();
   const errorMessage = date?.response?.data?.msg;
 
-  const {
-    data: { student },
-  } = useQuery(studentsQuery(id));
+  const { data: { students, teachers } = {} } = useQuery(
+    studentsTeachersQuery(id)
+  );
 
   const navigation = useNavigation();
   const isLoading = navigation.state === "submitting";
@@ -76,7 +82,8 @@ const EditStudent = () => {
       <StudentForm
         btnTitle="تعديل"
         errorMessage={errorMessage}
-        defaultValue={student}
+        defaultValue={students}
+        teachers={teachers}
         isLoading={isLoading}
       />
     </Box>

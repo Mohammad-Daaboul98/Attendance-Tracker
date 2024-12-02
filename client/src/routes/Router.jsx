@@ -3,15 +3,25 @@ import {
   Login,
   Error,
   DashboardLayout,
+  AllTeachers,
+  AddTeacher,
   AllStudents,
   AddStudent,
+  EditTeacher,
   EditStudent,
   StudentsAttendance,
 } from "../pages";
 import { queryClient } from "../utils/queryClient";
 import { action as loginAction } from "../pages/Login";
-
-import { action as addStudentAction } from "../pages/AddStudent";
+import { action as addTeacherAction } from "../pages/AddTeacher";
+import {
+  action as editTeacherAction,
+  loader as editTeacherLoader,
+} from "../pages/EditTeacher";
+import {
+  action as addStudentAction,
+  loader as addStudentLoader,
+} from "../pages/AddStudent";
 import {
   action as editStudentAction,
   loader as editStudentLoader,
@@ -20,7 +30,9 @@ import {
   loader as studentAttendanceLoader,
   action as studentAttendanceAction,
 } from "../pages/StudentsAttendance";
+import { action as deleteTeacherAction } from "../pages/DeleteTeacher";
 import { action as deleteStudentAction } from "../pages/DeletesStudent";
+import { loader as teachersLoader } from "../pages/AllTeachers";
 import { loader as studentLoader } from "../pages/AllStudents";
 import { loader as dashboardLoader } from "../pages/DashboardLayout";
 
@@ -42,6 +54,26 @@ export const Router = [
         loader: dashboardLoader(queryClient),
         children: [
           {
+            path: "teachers",
+            element: <AllTeachers />,
+            loader: teachersLoader(queryClient),
+          },
+          {
+            path: "add-teacher",
+            element: <AddTeacher />,
+            action: addTeacherAction(queryClient),
+          },
+          {
+            path: "edit-teacher/:id",
+            element: <EditTeacher />,
+            action: editTeacherAction(queryClient),
+            loader: editTeacherLoader(queryClient),
+          },
+          {
+            path: "delete-teacher/:id",
+            action: deleteTeacherAction(queryClient),
+          },
+          {
             path: "students",
             element: <AllStudents />,
             loader: studentLoader(queryClient),
@@ -56,6 +88,8 @@ export const Router = [
             path: "add-student",
             element: <AddStudent />,
             action: addStudentAction(queryClient),
+            loader: addStudentLoader(queryClient),
+
           },
           {
             path: "edit-student/:id",

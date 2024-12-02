@@ -1,17 +1,37 @@
 import { CLASS_TIME } from "../../../server/shared/constants";
 
+export const teacherInput = [
+  {
+    type: "text",
+    id: "teacherName",
+    labelText: "اسم الاستاذ",
+    defaultKey: "teacherName",
+  },
+];
 export const studentInput = [
   {
     type: "text",
     id: "studentName",
     labelText: "اسم الطالب",
     defaultKey: "studentName",
+    require: true,
+  },
+
+  {
+    type: "number",
+    id: "age",
+    labelText: "عمر الطالب",
+    defaultKey: "age",
+    require: true,
   },
   {
-    type: "text",
+    type: "select",
     id: "teacherName",
-    labelText: "اسم الاستاذ",
+    labelText: "الاستاذ",
     defaultKey: "teacherName",
+    listItem: "teacherName",
+    defaultKey: "teacherName",
+    secondaryListItem: "studentCount",
   },
   {
     type: "tel",
@@ -19,6 +39,8 @@ export const studentInput = [
     labelText: "رقم الهاتف",
     defaultKey: "studentPhone",
     phone: true,
+    require: true,
+
   },
   {
     type: "select",
@@ -28,5 +50,13 @@ export const studentInput = [
     listItem: false,
     defaultValue: "لايوجد",
     defaultKey: "studentClassTime",
+
+  },
+  {
+    type: "text",
+    id: "note",
+    labelText: "اضافة ملاحظة",
+    defaultKey: "note",
+    require: false,
   },
 ];

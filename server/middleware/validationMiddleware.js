@@ -1,14 +1,9 @@
 import mongoose from "mongoose";
 import { body, param, validationResult } from "express-validator";
-import {
-  BadRequestError,
-  NotFoundError,
-  UnauthorizedError,
-} from "../errors/customErrors.js";
+import { BadRequestError, NotFoundError } from "../errors/customErrors.js";
 
 import { arabicNameRegex } from "../utils/nameRegex.js";
 import User from "../models/User.js";
-import Student from "../models/StudentProfile.js";
 
 const withValidationErrors = (validationValue) => {
   return [
@@ -37,7 +32,7 @@ export const validateUserInput = withValidationErrors([
 ]);
 
 export const validateIdParam = withValidationErrors([
-  param("id").custom(async (id, { req }) => {    
+  param("id").custom(async (id, { req }) => {
     const isValidId = mongoose.Types.ObjectId.isValid(id);
     if (!isValidId) throw new BadRequestError("invalid MongoDB id");
 
@@ -49,4 +44,3 @@ export const validateLoginInput = withValidationErrors([
   body("userName").notEmpty().withMessage("يجب ادخال اسم المستخدم"),
   body("password").notEmpty().withMessage("يحب ادخال كلمة السر"),
 ]);
-

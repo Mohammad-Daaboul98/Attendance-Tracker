@@ -2,6 +2,28 @@ import { redirect, useActionData, useNavigation } from "react-router-dom";
 import { StudentForm } from "../components";
 import customFetch from "../utils/customFetch";
 import { toast } from "react-toastify";
+import { useQuery } from "@tanstack/react-query";
+
+const getTeachersQuery = () => {
+  return {
+    queryKey: ["teachers"],
+    queryFn: async () => {
+      const { data } = await customFetch.get("/teacher");
+      return data;
+    },
+  };
+};
+
+export const loader = (queryClient) => async () => {
+  try {
+    const teachers = await queryClient.ensureQueryData(getTeachersQuery());
+    return teachers;
+  } catch (error) {
+    const errorMessage = error?.response?.data?.msg;
+    toast.error(errorMessage);
+    throw error;
+  }
+};
 
 export const action =
   (queryClient) =>
@@ -24,6 +46,9 @@ export const action =
 
 const AddStudent = () => {
   const date = useActionData();
+
+  const { data: { teachers = [] } = {} } = useQuery(getTeachersQuery());
+
   const errorMessage = date?.response?.data?.msg;
 
   const navigation = useNavigation();
@@ -33,6 +58,7 @@ const AddStudent = () => {
       title="انشاء طالب"
       btnTitle="انشاء"
       errorMessage={errorMessage}
+      teachers={teachers}
       isLoading={isLoading}
       defaultValue={false}
     />

@@ -16,15 +16,42 @@ const FormRowSelect = ({
   PlacementTop,
   value,
   defaultValue,
+  teacher,
+  secondaryListItem,
 }) => {
   const [options, setOptions] = useState([]);
   const [selectedValue, setSelectedValue] = useState(value || null);
   const customStyles = useSelectStyles();
 
+  const CustomOption = ({ label, studentCount }) => (
+    <Box
+      display="flex"
+      alignItems="center"
+      justifyContent="space-between"
+      width="100%"
+    >
+      <Text fontWeight="bold" color="white">
+        {label}
+      </Text>
+      <Badge colorScheme={"blue"} borderRadius="full" px="2">
+        {studentCount} طلاب
+      </Badge>
+    </Box>
+  );
+
   useEffect(() => {
     const formattedOptions = list.map((item) => ({
-      value: item._id || item.id || item[listItem] || item,
-      label: listItem ? item[listItem] : item,
+      value: item[listItem] || item._id || item.id || item,
+      label: secondaryListItem ? (
+        <CustomOption
+          label={item[listItem]}
+          studentCount={item[secondaryListItem]}
+        />
+      ) : listItem ? (
+        item[listItem]
+      ) : (
+        item
+      ),
     }));
     setOptions(formattedOptions);
   }, [list, listItem]);
@@ -35,6 +62,8 @@ const FormRowSelect = ({
     setSelectedValue(e);
     onChange && onChange(selected ? selected : null);
   };
+
+  console.log(options);
 
   return (
     <FormControl isRequired={true}>

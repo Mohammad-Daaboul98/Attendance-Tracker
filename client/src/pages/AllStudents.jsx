@@ -2,7 +2,6 @@ import { useQuery } from "@tanstack/react-query";
 import { useLoaderData } from "react-router-dom";
 import { SearchComponent, TableComponent } from "../components";
 import customFetch from "../utils/customFetch";
-import ExportExcel from "../components/ExportCSV";
 
 const allStudentsQuery = (params) => {
   const { search } = params;
@@ -49,9 +48,9 @@ const AllStudents = () => {
       accessorKey: "teacherName",
     },
     {
-      id: "studentClassTime",
-      header: "وقت حضور الطالب",
-      accessorKey: "studentClassTime",
+      id: "age",
+      header: "عمر الطالب",
+      accessorKey: "age",
     },
     {
       id: "studentPhone",
@@ -61,7 +60,19 @@ const AllStudents = () => {
         <div style={{ direction: "ltr" }}>{cell.getValue()}</div>
       ),
     },
+    {
+      id: "studentClassTime",
+      header: "وقت حضور الطالب",
+      accessorKey: "studentClassTime",
+    },
+    {
+      id: "note",
+      header: "ملاحظات",
+      accessorKey: "note",
+    },
   ];
+
+  console.log(student);
 
   return (
     <>
