@@ -35,6 +35,7 @@ export const action =
       await customFetch.post("student", { ...data });
 
       queryClient.invalidateQueries("student");
+      queryClient.invalidateQueries(["teachers"]);
       toast.success("تم انشاء طالب جديد", { theme: "colored" });
 
       return redirect("../students");

@@ -42,6 +42,7 @@ export const action =
         ...data,
       });
       queryClient.invalidateQueries(["teachers"]);
+      queryClient.invalidateQueries("student");
       toast.success("تم تعديل معلومات الاستاذ", { theme: "colored" });
 
       return redirect("../teachers");

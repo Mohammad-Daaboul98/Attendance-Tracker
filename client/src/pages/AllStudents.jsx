@@ -2,6 +2,17 @@ import { useQuery } from "@tanstack/react-query";
 import { useLoaderData } from "react-router-dom";
 import { SearchComponent, TableComponent } from "../components";
 import customFetch from "../utils/customFetch";
+import {
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Flex,
+  Heading,
+  Image,
+  SimpleGrid,
+  Text,
+} from "@chakra-ui/react";
 
 const allStudentsQuery = (params) => {
   const { search } = params;
@@ -72,10 +83,28 @@ const AllStudents = () => {
     },
   ];
 
-  console.log(student);
-
   return (
     <>
+      {/* <SimpleGrid columns={3} spacing={10}
+        p="40px 20px"
+      >
+        {student.map((i, index) => (
+          <Card align="center" key={index}>
+            <CardHeader textAlign="center">
+              <Heading size="lg" fontFamily="'Reem Kufi Fun', serif" mb='10px'>
+                مسجد الاحسان
+              </Heading>
+              <Text fontFamily='"Almarai", sans-serif' fontSize="16px" fontWeight='bold'>
+                دورة اقرأ وارق
+              </Text>
+            </CardHeader>
+            <CardBody>
+              <Image src={i.qrCode} w="200px" h="200px" />
+            </CardBody>
+          </Card>
+        ))}
+      </SimpleGrid> */}
+      
       <SearchComponent
         searchValue={searchValue}
         labelText="بحث عن طريق اسم الطالب"
@@ -89,7 +118,7 @@ const AllStudents = () => {
           editAndDelete={true}
           editPage="edit-student"
           deletePage="delete-student"
-          downloadBtn={true}
+          // downloadBtn={true}
         />
       </>
     </>

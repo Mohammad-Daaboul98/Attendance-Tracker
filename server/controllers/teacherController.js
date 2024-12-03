@@ -1,4 +1,5 @@
 import Teacher from "../models/Teacher.js";
+import Student from "../models/Student.js";
 import { StatusCodes } from "http-status-codes";
 
 export const getAllTeachers = async (req, res) => {
@@ -37,7 +38,6 @@ export const getAllTeachers = async (req, res) => {
     },
   ]);
 
-
   res.status(StatusCodes.OK).json({ teachers });
 };
 
@@ -54,18 +54,29 @@ export const createTeacherProfile = async (req, res) => {
 export const updateTeacherProfile = async (req, res) => {
   const { id } = req.params;
 
-  const teacherProfile = await Teacher.findByIdAndUpdate(id, req.body, {
-    new: true,
-  });
-  res
-    .status(StatusCodes.OK)
-    .json({ msg: "تم تعديل حساب الاستاذ", teacherProfile });
+  const { teacherName } = req.body;
+
+  const teacher = await Teacher.findByIdAndUpdate(id, req.body);
+
+  await Student.updateMany(
+    { teacherName: teacher.teacherName },
+    { teacherName: teacherName }
+  );
+
+  console.log(s);
+
+  res.status(StatusCodes.OK).json({ msg: "تم تعديل حساب الاستاذ" });
 };
 
 export const deleteTeacherProfile = async (req, res) => {
   const { id } = req.params;
 
-  await Teacher.findByIdAndDelete(id);
+  const teacher = await Teacher.findByIdAndDelete(id);
+
+  await Student.updateMany(
+    { teacherName: teacher.teacherName },
+    { teacherName: "بدون استاذ" }
+  );
 
   res.status(StatusCodes.OK).json({
     msg: "تم حذف الاستاذ",

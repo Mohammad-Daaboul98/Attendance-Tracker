@@ -52,6 +52,7 @@ export const action =
       });
       const toastMsg = student.data.msg;
       queryClient.invalidateQueries(["student"]);
+      queryClient.invalidateQueries(["teachers"]);
       toast.success(toastMsg, { theme: "colored" });
       return redirect("../students");
     } catch (error) {
