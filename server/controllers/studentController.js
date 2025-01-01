@@ -2,6 +2,7 @@ import Student from "../models/Student.js";
 import { StatusCodes } from "http-status-codes";
 import qrCodeGenerator from "../utils/qrCodeGenerator.js";
 import cloudinary from "cloudinary";
+import dayjs from "dayjs";
 
 export const getAllStudents = async (req, res) => {
   const { search } = req.query;
@@ -90,35 +91,64 @@ export const updateMultipleStudentsAttendance = async (req, res) => {
   const { date, attendance } = req.body;
 
   try {
-    const bulkOperations = attendance.map(({ studentId, status }) => ({
-      updateOne: {
-        filter: {
-          _id: studentId,
-          "studentAttendance.date": new Date(date),
-        },
-        update: {
-          $set: { "studentAttendance.$.status": status },
-        },
-        upsert: false,
-      },
-    }));
+    const formattedDate = dayjs(date).toISOString();
 
-    const bulkNewAttendance = attendance.map(({ studentId, status }) => ({
-      updateOne: {
-        filter: { _id: studentId },
-        update: {
-          $push: { studentAttendance: { date: new Date(date), status } },
-        },
-        upsert: true,
-      },
-    }));
+    // Separate existing and new attendance records
+    const existingAttendanceOperations = [];
+    const newAttendanceOperations = [];
 
-    await Student.bulkWrite([...bulkOperations, ...bulkNewAttendance]);
+    for (const { studentId, status } of attendance) {
+      // Check if the document has an existing attendance entry for the date
+      const student = await Student.findOne({
+        _id: studentId,
+        "studentAttendance.date": formattedDate,
+      });
 
-    res.status(StatusCodes.OK).json({ message: "تم تعديل حالة حضور الطالاب" });
+      if (student) {
+        // Add operation to update the existing attendance
+        existingAttendanceOperations.push({
+          updateOne: {
+            filter: {
+              _id: studentId,
+              "studentAttendance.date": formattedDate,
+            },
+            update: {
+              $set: { "studentAttendance.$.status": status },
+            },
+          },
+        });
+      } else {
+        // Add operation to insert new attendance
+        newAttendanceOperations.push({
+          updateOne: {
+            filter: { _id: studentId },
+            update: {
+              $push: { studentAttendance: { date: formattedDate, status } },
+            },
+          },
+        });
+      }
+    }
+
+    
+
+    // Execute bulk operations sequentially
+    if (existingAttendanceOperations.length > 0) {
+      await Student.bulkWrite(existingAttendanceOperations);
+    }
+
+    if (newAttendanceOperations.length > 0) {
+      await Student.bulkWrite(newAttendanceOperations);
+    }
+
+    res.status(StatusCodes.OK).json({
+      message: "تم اضافة حضور الطلاب",
+    });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "يوجد خطأ في ادخال حضور الطلاب" });
+    console.error("Error updating student attendance:", error.message);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      message: "An error occurred while updating student attendance.",
+    });
   }
 };
 

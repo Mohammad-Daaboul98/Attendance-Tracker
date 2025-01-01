@@ -11,6 +11,6 @@ export { default as RadioGroup } from "./RadioGroup";
 export { default as RadioCard } from "./RadioCard";
 export { default as TeacherFrom } from "./TeacherFrom";
 export { default as StudentForm } from "./StudentForm";
-export { default as QrReader } from "./QrReader";
+export { default as QrReaderComponent } from "./QrReaderComponent";
 export { default as Links } from "./Links";
 export { default as ExportCSV } from "./ExportCSV";

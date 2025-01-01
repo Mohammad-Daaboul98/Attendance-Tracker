@@ -85,12 +85,12 @@ const AllStudents = () => {
 
   return (
     <>
-      {/* <SimpleGrid columns={3} spacing={10}
+      {/* <SimpleGrid columns={3} spacingX={10} spacingY={20}
         p="40px 20px"
       >
         {student.map((i, index) => (
           <Card align="center" key={index}>
-            <CardHeader textAlign="center">
+            <CardHeader textAlign="center" py='10px'>
               <Heading size="lg" fontFamily="'Reem Kufi Fun', serif" mb='10px'>
                 مسجد الاحسان
               </Heading>
@@ -98,13 +98,14 @@ const AllStudents = () => {
                 دورة اقرأ وارق
               </Text>
             </CardHeader>
-            <CardBody>
+            <CardBody py='10px'>
               <Image src={i.qrCode} w="200px" h="200px" />
             </CardBody>
           </Card>
         ))}
       </SimpleGrid> */}
-      
+
+
       <SearchComponent
         searchValue={searchValue}
         labelText="بحث عن طريق اسم الطالب"

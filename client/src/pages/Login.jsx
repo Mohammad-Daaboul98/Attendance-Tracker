@@ -5,6 +5,7 @@ import customFetch from "../utils/customFetch";
 import { toast } from "react-toastify";
 import { BeatLoader } from "react-spinners";
 
+
 export const action =
   (queryClient) =>
   async ({ request }) => {
@@ -14,7 +15,7 @@ export const action =
       await customFetch.post("/auth/login", data);
       queryClient.invalidateQueries();
       toast.success("تم تسجيل الدخول", { theme: "colored" });
-      return redirect("/dashboard");
+      return redirect("/dashboard/students-attendance");
     } catch (error) {
       toast.error(error?.response?.data?.msg, { theme: "colored" });
       return error;

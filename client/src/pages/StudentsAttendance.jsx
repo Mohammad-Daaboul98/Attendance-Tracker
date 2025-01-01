@@ -1,11 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import {
-  QrReader,
+  QrReaderComponent,
   RadioGroup,
   SearchComponent,
   TableComponent,
 } from "../components";
-import { Form, redirect, useLoaderData, useNavigation } from "react-router-dom";
+import { Form, useLoaderData, useNavigation } from "react-router-dom";
 import customFetch from "../utils/customFetch";
 import { useState } from "react";
 import { Box, Button, Input } from "@chakra-ui/react";
@@ -32,7 +32,7 @@ export const action =
     const data = Object.fromEntries(formData);
     let studentAttendance;
 
-    if (data.status) {
+    if (data?.status) {
       studentAttendance = {
         date: data.date,
         attendance: [
@@ -86,172 +86,145 @@ export const loader =
     }
   };
 
-const StudentsAttendance = () => {
-  const [studentsAttendance, setStudentsAttendance] = useState({});
-  const [showQrReader, setShowQrReader] = useState(false);
-  const [qrAttendData, setQrAttendData] = useState(null);
-
-  const { searchValue } = useLoaderData();
-  const {
-    data: { student },
-  } = useQuery(allStudentsQuery(searchValue));
-
-  const navigation = useNavigation();
-  const isLoading = navigation.state === "submitting";
-
-  // Handle attendance state change for each student
-  const handleAttendanceChange = (studentId, attendance) => {
-    setStudentsAttendance((prevState) => ({
-      ...prevState,
-      [studentId]: attendance, // Update attendance for the specific student
-    }));
-  };
-
-  const columns = [
-    { id: "studentName", header: "الطالب", accessorKey: "studentName" },
-    {
-      id: "teacherName",
-      header: "الاستاذ",
-      accessorKey: "teacherName",
-    },
-    {
-      header: "عدد ايام الحضور",
-      accessorKey: "present",
-      isNumeric: true,
-      cell: ({ row }) => {
-        let presentCount = 0;
-        const attendance = row.original.studentAttendance;
-        const attendanceArr = attendance.map((attend) => {
-          return attend.status;
-        });
-
-        attendanceArr.map((i) => {
-          if (i === "موجود") return presentCount++;
-        });
-        return presentCount;
+  const StudentsAttendance = () => {
+    const [studentsAttendance, setStudentsAttendance] = useState({});
+  
+    const { searchValue } = useLoaderData();
+    const {
+      data: { student },
+    } = useQuery(allStudentsQuery(searchValue));
+  
+    const navigation = useNavigation();
+    const isLoading = navigation.state === "submitting";
+  
+    // Handle attendance state change for each student
+    const handleAttendanceChange = (studentId, attendance) => {
+      setStudentsAttendance((prevState) => ({
+        ...prevState,
+        [studentId]: attendance, // Update attendance for the specific student
+      }));
+    };
+  
+    const columns = [
+      { id: "studentName", header: "الطالب", accessorKey: "studentName" },
+      {
+        id: "teacherName",
+        header: "الاستاذ",
+        accessorKey: "teacherName",
       },
-    },
-    {
-      header: "عدد ايام الغياب",
-      accessorKey: "absent",
-      isNumeric: true,
-      cell: ({ row }) => {
-        let absentCount = 0;
-        const attendance = row.original.studentAttendance;
-        const attendanceArr = attendance.map((attend) => {
-          return attend.status;
-        });
-
-        attendanceArr.map((i) => {
-          if (i === "غائب") return absentCount++;
-        });
-        return absentCount;
+      {
+        header: "عدد ايام الحضور",
+        accessorKey: "present",
+        isNumeric: true,
+        cell: ({ row }) => {
+          let presentCount = 0;
+          const attendance = row.original.studentAttendance;
+          const attendanceArr = attendance.map((attend) => {
+            return attend.status;
+          });
+  
+          attendanceArr.map((i) => {
+            if (i === "موجود") return presentCount++;
+          });
+          return presentCount;
+        },
       },
-    },
-    {
-      header: "حالة الطالب",
-      accessorKey: "attendance",
-      cell: ({ row }) => {
-        const studentId = row.original._id;
-        const attendance = studentsAttendance[studentId] || "موجد";
-
-        return (
-          <Box>
-            <RadioGroup
-              studentsAttendance={(value) =>
-                handleAttendanceChange(studentId, value)
-              }
-              currentAttendance={attendance}
-            />
-          </Box>
-        );
+      {
+        header: "عدد ايام الغياب",
+        accessorKey: "absent",
+        isNumeric: true,
+        cell: ({ row }) => {
+          let absentCount = 0;
+          const attendance = row.original.studentAttendance;
+          const attendanceArr = attendance.map((attend) => {
+            return attend.status;
+          });
+  
+          attendanceArr.map((i) => {
+            if (i === "غائب") return absentCount++;
+          });
+          return absentCount;
+        },
       },
-    },
-  ];
-
-  // Handle QR code scan result
-  const handleQrScan = (data) => {
-    if (data) {
-      // Assuming the QR code data is structured as { id, status }
-      setQrAttendData(data);
-      setShowQrReader(false); // Close the QR Reader
-      handleAttendanceChange(data.id, data.status); // Update the attendance
-    }
-  };
-
-  return (
-    <>
-      <SearchComponent
-        searchValue={searchValue}
-        labelText="بحث عن طريق اسم الطالب"
-      />
-
-      <Box
-        mx={"auto"}
-        mt={4}
-        mb="5px"
-        width={{ base: "90%", md: "80%", lg: "xl", xl: "2xl" }}
-      >
-        <Form method="post">
-          {showQrReader && (
-            <QrReader
-              onClose={() => setShowQrReader(false)}
-              onScan={handleQrScan}
-            />
-          )}
-
-          {Object.entries(studentsAttendance).map(([studentId, attendance]) => (
-            <Input
-              key={studentId}
-              type="hidden"
-              name={studentId}
-              value={attendance}
-            />
-          ))}
-          <Box
-            display="flex"
-            gap={"20px 10px"}
-            flexWrap={{ base: "wrap", lg: "nowrap", md: "nowrap", sm: "wrap" }}
-          >
-            <Input
-              type="date"
-              name="date"
-              defaultValue={new Date().toISOString().split("T")[0]}
-              width={"auto"}
-              size="lg"
-              textAlign="right"
-              w={{ base: "100%", lg: "auto", md: "auto", sm: "100%" }}
-            />
-            <Button
-              colorScheme="green"
-              size="lg"
-              w={{ base: "48%", lg: "auto", md: "auto", sm: "48%" }}
-              onClick={() => setShowQrReader(true)} // Show QR Reader on click
+      {
+        header: "حالة الطالب",
+        accessorKey: "attendance",
+        cell: ({ row }) => {
+          const studentId = row.original._id;
+          const attendance = studentsAttendance[studentId] || "موجد";
+  
+          return (
+            <Box>
+              <RadioGroup
+                studentsAttendance={(value) =>
+                  handleAttendanceChange(studentId, value)
+                }
+                currentAttendance={attendance}
+              />
+            </Box>
+          );
+        },
+      },
+    ];
+    return (
+      <>
+        <SearchComponent
+          searchValue={searchValue}
+          labelText="بحث عن طريق اسم الطالب"
+        />
+        <Box
+          mx={"auto"}
+          mt={4}
+          mb="5px"
+          width={{ base: "90%", md: "80%", lg: "xl", xl: "2xl" }}
+        >
+          <Form method="post">
+            {Object.entries(studentsAttendance).map(([studentId, attendance]) => (
+              <Input
+                key={studentId}
+                type="hidden"
+                name={studentId}
+                value={attendance}
+              />
+            ))}
+            <Box
+              display="flex"
+              gap={"20px 10px"}
+              flexWrap={{ base: "wrap", lg: "nowrap", md: "nowrap", sm: "wrap" }}
             >
-              تصوير الباركود
-            </Button>
-            <Button
-              type="submit"
-              colorScheme="teal"
-              size="lg"
-              w={{ base: "48%", lg: "auto", md: "auto", sm: "48%" }}
-              isLoading={isLoading}
-              spinner={<BeatLoader size={8} color="white" />}
-            >
-              حفظ الحضور
-            </Button>
-          </Box>
-        </Form>
-      </Box>
-
-      <TableComponent
-        title="جدول الحضور"
-        columns={columns}
-        data={student}
-        editAndDelete={false}
-      />
-    </>
-  );
-};
-
-export default StudentsAttendance;
+              <Input
+                type="date"
+                name="date"
+                defaultValue={new Date().toISOString().split("T")[0]}
+                width={"auto"}
+                size="lg"
+                textAlign="right"
+                w={{ base: "100%", lg: "auto", md: "auto", sm: "100%" }}
+              />
+              <QrReaderComponent />
+              <Button
+                id="checkAttend"
+                type="submit"
+                colorScheme="teal"
+                size="lg"
+                w={{ base: "48%", lg: "auto", md: "auto", sm: "48%" }}
+                isLoading={isLoading}
+                spinner={<BeatLoader size={8} color="white" />}
+              >
+                حفظ الحضور
+              </Button>
+            </Box>
+          </Form>
+        </Box>
+  
+        <TableComponent
+          title="جدول الحضور"
+          columns={columns}
+          data={student}
+          editAndDelete={false}
+        />
+      </>
+    );
+  };
+  
+  export default StudentsAttendance;
