@@ -38,7 +38,7 @@ export const action =
       queryClient.invalidateQueries(["teachers"]);
       toast.success("تم انشاء طالب جديد", { theme: "colored" });
 
-      return redirect("../students");
+      return null;
     } catch (error) {
       console.error("Error:", error);
       return error;
